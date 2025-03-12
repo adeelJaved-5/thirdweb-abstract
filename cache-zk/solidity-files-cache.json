@@ -1,0 +1,88 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "/home/adeel-javed/hardhat-javascript-starter/contracts/TNFT.sol": {
+      "lastModificationDate": 1741810975098,
+      "contentHash": "b80ed554736c395d7b190c118c6492f4",
+      "sourceName": "contracts/TNFT.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "./Utils.sol",
+        "./Utils.sol",
+        "./Utils.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "TNFT"
+      ]
+    },
+    "/home/adeel-javed/hardhat-javascript-starter/contracts/Utils.sol": {
+      "lastModificationDate": 1741810916448,
+      "contentHash": "1c56778b09177fc425e0d512af9f47de",
+      "sourceName": "contracts/Utils.sol",
+      "solcConfig": {
+        "version": "0.8.17",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.17"
+      ],
+      "artifacts": [
+        "Context",
+        "ERC1155",
+        "ERC165",
+        "Hashes",
+        "IERC1155",
+        "IERC1155MetadataURI",
+        "IERC1155Receiver",
+        "IERC165",
+        "MerkleProof",
+        "Ownable"
+      ]
+    }
+  }
+}
