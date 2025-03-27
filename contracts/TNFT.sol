@@ -77,6 +77,7 @@ contract TNFT is ERC1155, Ownable {
     }
 
     function withdraw() external onlyOwner nonReentrant {
-        payable(owner()).transfer(address(this).balance);
+        (bool success, ) = owner().call{value: address(this).balance}("");
++         require(success, "Transfer failed.");
     }
 }
