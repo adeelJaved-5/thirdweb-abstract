@@ -45,7 +45,14 @@ contract TNFT is ERC1155, Ownable {
         uint256 startTime,
         uint256 endTime
     ) external onlyOwner {
-        require(startTime < endTime, "Invalid time range");
+        require(
+            startTime > block.timestamp,
+            "Start time must be in the future"
+        );
+        require(
+            startTime < endTime,
+            "Invalid time range"
+        );
         phases[phaseId] = Phase(merkleRoot, price, startTime, endTime);
         emit PhaseUpdated(phaseId, price, startTime, endTime);
     }
