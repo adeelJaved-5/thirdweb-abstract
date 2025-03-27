@@ -94,7 +94,11 @@ contract TNFT is ERC1155, Ownable {
 
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
         require(
-            MerkleProof.verify(merkleProof, phases[phaseId].merkleRoot, leaf),
+            MerkleProof.verifyCalldata(
+                merkleProof,
+                phases[phaseId].merkleRoot,
+                leaf
+            ),
             "Not whitelisted"
         );
 
