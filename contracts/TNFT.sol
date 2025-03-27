@@ -6,25 +6,29 @@ import {Ownable} from "./Utils.sol";
 import {MerkleProof} from "./Utils.sol";
 
 contract TNFT is ERC1155, Ownable {
-
     uint256 public constant MAX_SUPPLY = 5000;
     uint256 public nextTokenId = 1;
     uint256 private lock = 1;
-    
+
     struct Phase {
         bytes32 merkleRoot;
         uint256 price;
         uint256 startTime;
         uint256 endTime;
     }
-    
+
     mapping(uint8 => Phase) public phases;
     mapping(address => bool) public hasMinted;
 
     constructor() ERC1155("TNFT", "TNFT", "https://api.ipfs.metadata/") {}
-    
+
     event Minted(address indexed minter, uint256 tokenId, uint8 phaseId);
-    event PhaseUpdated(uint8 phaseId, uint256 price, uint256 startTime, uint256 endTime);
+    event PhaseUpdated(
+        uint8 phaseId,
+        uint256 price,
+        uint256 startTime,
+        uint256 endTime
+    );
     event URIUpdated(string newURI);
 
     modifier nonReentrant() {
@@ -34,7 +38,13 @@ contract TNFT is ERC1155, Ownable {
         lock = 1;
     }
 
-    function setPhase(uint8 phaseId, bytes32 merkleRoot, uint256 price, uint256 startTime, uint256 endTime) external onlyOwner {
+    function setPhase(
+        uint8 phaseId,
+        bytes32 merkleRoot,
+        uint256 price,
+        uint256 startTime,
+        uint256 endTime
+    ) external onlyOwner {
         require(startTime < endTime, "Invalid time range");
         phases[phaseId] = Phase(merkleRoot, price, startTime, endTime);
         emit PhaseUpdated(phaseId, price, startTime, endTime);
@@ -45,31 +55,49 @@ contract TNFT is ERC1155, Ownable {
         emit URIUpdated(newURI);
     }
 
-    function mintIconics(bytes32[] calldata merkleProof) external payable nonReentrant {
+    function mintIconics(
+        bytes32[] calldata merkleProof
+    ) external payable nonReentrant {
         _mintForPhase(1, merkleProof);
     }
 
-    function mintNoobs(bytes32[] calldata merkleProof) external payable nonReentrant {
+    function mintNoobs(
+        bytes32[] calldata merkleProof
+    ) external payable nonReentrant {
         _mintForPhase(2, merkleProof);
     }
 
-    function mintNFTHolders(bytes32[] calldata merkleProof) external payable nonReentrant {
+    function mintNFTHolders(
+        bytes32[] calldata merkleProof
+    ) external payable nonReentrant {
         _mintForPhase(3, merkleProof);
     }
 
-    function mintBithubUsers(bytes32[] calldata merkleProof) external payable nonReentrant {
+    function mintBithubUsers(
+        bytes32[] calldata merkleProof
+    ) external payable nonReentrant {
         _mintForPhase(4, merkleProof);
     }
 
-    function _mintForPhase(uint8 phaseId, bytes32[] calldata merkleProof) internal {
-        require(block.timestamp >= phases[phaseId].startTime && block.timestamp <= phases[phaseId].endTime, "Minting not active");
+    function _mintForPhase(
+        uint8 phaseId,
+        bytes32[] calldata merkleProof
+    ) internal {
+        require(
+            block.timestamp >= phases[phaseId].startTime &&
+                block.timestamp <= phases[phaseId].endTime,
+            "Minting not active"
+        );
         require(msg.value == phases[phaseId].price, "Incorrect ETH sent");
         require(!hasMinted[msg.sender], "Already minted");
         require(nextTokenId <= MAX_SUPPLY, "Exceeds max supply");
-        
+
         bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-        require(MerkleProof.verify(merkleProof, phases[phaseId].merkleRoot, leaf), "Not whitelisted");
-        
+        require(
+            MerkleProof.verify(merkleProof, phases[phaseId].merkleRoot, leaf),
+            "Not whitelisted"
+        );
+
         _mint(msg.sender, nextTokenId, 1, "");
         hasMinted[msg.sender] = true;
         emit Minted(msg.sender, nextTokenId, phaseId);
@@ -77,6 +105,7 @@ contract TNFT is ERC1155, Ownable {
     }
 
     function withdraw() external onlyOwner nonReentrant {
-        payable(owner()).transfer(address(this).balance);
+        (bool success, ) = owner().call{value: address(this).balance}("");
+        +require(success, "Transfer failed.");
     }
 }
